@@ -1,0 +1,27 @@
+{
+  "name": "m08945-orderfulfillment-backend",
+  "version": "1.0.0",
+  "private": true,
+  "description": "M08945 Order Fulfillment - internal backend service (domain/CQRS + SQL Server)",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "test": "jest --runInBand",
+    "test:unit": "jest --runInBand test/unit",
+    "test:integration": "jest --runInBand test/integration"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "helmet": "^7.1.0",
+    "mssql": "^11.0.1",
+    "opossum": "^8.1.4",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "nodemon": "^3.1.4",
+    "supertest": "^7.0.0"
+  }
+}

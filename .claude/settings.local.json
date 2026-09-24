@@ -1,0 +1,48 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir -p \"/e/ai native invetory/backend/src\" \"/e/ai native invetory/frontend/src\" \"/e/ai native invetory/db/sql\" \"/e/ai native invetory/.claude/skills/backend\" \"/e/ai native invetory/.claude/skills/frontend\" \"/e/ai native invetory/.claude/skills/db\" *)",
+      "Bash(npm --version)",
+      "Bash(npm install *)",
+      "Bash(npx jest *)",
+      "Bash(echo \"EXIT:$?\")",
+      "Bash(docker --version)",
+      "Bash(docker compose *)",
+      "Bash(docker exec *)",
+      "Bash(MSYS_NO_PATHCONV=1 docker exec m08945-sqlserver /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P 'Ch@ngeMe123!' -C -Q \"SELECT 1\")",
+      "Bash(MSYS_NO_PATHCONV=1 docker exec m08945-sqlserver /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P 'Ch@ngeMe123!' -C -Q \"IF DB_ID\\('M08945_orderfulfillment'\\) IS NULL CREATE DATABASE M08945_orderfulfillment;\")",
+      "Bash(MSYS_NO_PATHCONV=1 docker cp \"E:/ai native invetory/db/sql/001_M08945_orderfulfillment_schema.sql\" m08945-sqlserver:/tmp/schema.sql)",
+      "Bash(MSYS_NO_PATHCONV=1 docker exec m08945-sqlserver /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P 'Ch@ngeMe123!' -C -d M08945_orderfulfillment -i /tmp/schema.sql)",
+      "Bash(MSYS_NO_PATHCONV=1 docker exec m08945-sqlserver /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P 'Ch@ngeMe123!' -C -d M08945_orderfulfillment -Q \"SELECT name FROM sys.tables ORDER BY name;\")",
+      "Bash(curl -s -X POST http://localhost:4001/internal/seed/customers -H 'Content-Type: application/json' -H 'X-Internal-Token: dev-shared-secret-12345' -d '{\"customerid\":\"cust001\",\"eligibilitystatus\":\"Eligible\"}')",
+      "Bash(curl -s -X POST http://localhost:4001/internal/seed/customers -H 'Content-Type: application/json' -H 'X-Internal-Token: dev-shared-secret-12345' -d '{\"customerid\":\"cust002\",\"eligibilitystatus\":\"CreditHold\"}')",
+      "Bash(curl -s -X POST http://localhost:4001/internal/seed/inventory -H 'Content-Type: application/json' -H 'X-Internal-Token: dev-shared-secret-12345' -d '{\"productid\":\"prod01\",\"warehouseid\":\"WH-A\",\"availablequantity\":10,\"earliestdispatchdate\":\"2026-09-01\"}')",
+      "Bash(curl -s -X POST http://localhost:4001/internal/seed/inventory -H 'Content-Type: application/json' -H 'X-Internal-Token: dev-shared-secret-12345' -d '{\"productid\":\"prod01\",\"warehouseid\":\"WH-B\",\"availablequantity\":100,\"earliestdispatchdate\":\"2026-09-01\"}')",
+      "Bash(curl -s -X POST http://localhost:4000/orders -H \"Content-Type: application/json\" -d '{\"orderid\":\"ord1001\",\"customerid\":\"cust001\",\"customertype\":\"Standard\",\"productid\":\"prod01\",\"quantity\":60,\"promiseddeliverydate\":\"2026-09-25\"}')",
+      "Bash(curl -s -X POST http://localhost:4000/orders -H \"Content-Type: application/json\" -d '{\"orderid\":\"ord1003\",\"customerid\":\"cust002\",\"customertype\":\"Standard\",\"productid\":\"prod01\",\"quantity\":10,\"promiseddeliverydate\":\"2026-09-25\"}')",
+      "Bash(curl -s http://localhost:4000/orders/ord1001)",
+      "Bash(curl -s -i http://localhost:4000/orders/ord9999)",
+      "Bash(MSYS_NO_PATHCONV=1 docker exec m08945-sqlserver /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P 'Ch@ngeMe123!' -C -d M08945_orderfulfillment -Q \"SELECT productid, warehouseid, availablequantity FROM M08945_orderfulfillment_inventory ORDER BY warehouseid; SELECT orderid, status, reason FROM M08945_orderfulfillment_order ORDER BY orderid; SELECT orderid, warehouseid, allocatedquantity FROM M08945_orderfulfillment_allocation; SELECT eventtype, orderid FROM M08945_orderfulfillment_eventlog ORDER BY eventid;\")",
+      "Bash(curl -s -X POST http://localhost:4000/orders -H \"Content-Type: application/json\" -d '{\"orderid\":\"ord1004\",\"customerid\":\"cust001\",\"customertype\":\"Standard\",\"productid\":\"prod01\",\"quantity\":500,\"promiseddeliverydate\":\"2026-09-25\"}')",
+      "Bash(curl -s -i -X POST http://localhost:4000/orders -H \"Content-Type: application/json\" -d '{\"orderid\":\"ord1005\",\"customerid\":\"cust001\",\"customertype\":\"priority\",\"productid\":\"prod01\",\"quantity\":5,\"promiseddeliverydate\":\"2026-09-25\"}')",
+      "Bash(curl -s -i http://localhost:4001/internal/orders/ord1001)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code} \" http://localhost:4000/orders/ord1001)",
+      "Bash(node -e ' *)",
+      "Bash(powershell -Command \"Get-Process -Id \\(Get-NetTCPConnection -LocalPort 4000 -ErrorAction SilentlyContinue\\).OwningProcess -ErrorAction SilentlyContinue | Stop-Process -Force\")",
+      "Bash(node src/server.js)",
+      "Bash(curl -s http://localhost:4000/health)",
+      "Bash(curl -s -i -H \"Origin: http://localhost:3000\" http://localhost:4000/health)",
+      "Bash(curl -s -o /dev/null -w \"frontend:%{http_code}\\\\n\" http://localhost:3000 --max-time 2)",
+      "Bash(curl -s -o /dev/null -w \"backend:%{http_code}\\\\n\" http://localhost:4001/health --max-time 2)",
+      "Bash(curl -s -o /dev/null -w \"bff:%{http_code}\\\\n\" http://localhost:4000/health --max-time 2)",
+      "Bash(npm run *)",
+      "Bash(MSYS_NO_PATHCONV=1 docker cp \"E:/ai native invetory/db/sql/002_M08945_orderfulfillment_change1.sql\" m08945-sqlserver:/tmp/change1.sql)",
+      "Bash(MSYS_NO_PATHCONV=1 docker exec m08945-sqlserver /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P 'Ch@ngeMe123!' -C -d M08945_orderfulfillment -i /tmp/change1.sql)",
+      "Bash(echo \"PRIORITY_PARTIAL_THRESHOLD_PERCENT=70\")",
+      "Bash(curl -s http://localhost:4001/health)"
+    ],
+    "additionalDirectories": [
+      "E:\\ai native invetory\\.claude\\skills"
+    ]
+  }
+}
