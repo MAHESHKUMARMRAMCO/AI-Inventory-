@@ -79,4 +79,18 @@ const createInventory = createBreakerCall(
   201
 );
 
-module.exports = { submitOrder, getOrder, listCustomers, createCustomer, listInventory, createInventory };
+const applyInventoryAvailability = createBreakerCall(
+  'backendClient.applyInventoryAvailability',
+  (payload) => http.post('/internal/inventory-availability', payload),
+  200
+);
+
+module.exports = {
+  submitOrder,
+  getOrder,
+  listCustomers,
+  createCustomer,
+  listInventory,
+  createInventory,
+  applyInventoryAvailability
+};

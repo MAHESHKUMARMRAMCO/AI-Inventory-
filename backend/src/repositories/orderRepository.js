@@ -256,4 +256,82 @@ async function _createBlocked(
 }
 const createBlocked = withBreaker('orderRepository.createBlocked', _createBlocked);
 
-module.exports = { getById, tryCreateReleased, tryCreatePriorityOrder, createBlocked };
+/**
+ * CHANGE2 — applies newly available inventory to the oldest Open backorder
+ * for a product (createdat ASC, orderid ASC tie-break). Creates an
+ * additional allocation row (existing allocations are never touched),
+ * bumps released/reduces backordered on the order, and closes the
+ * backorder when its remaining quantity reaches 0. Returns null if there
+ * is no Open backorder for the product (caller responds NoOpenBackorder).
+ */
+async function _applyInventoryAvailability({ productid, warehouseid, availablequantity }) {
+  const pool = await getPool();
+
+  const found = await pool
+    .request()
+    .input('productid', sql.VarChar(50), productid)
+    .query(`
+      SELECT TOP 1 b.orderid, b.quantity AS backorderedquantity, o.releasedquantity
+      FROM M08945_orderfulfillment_backorder b
+      JOIN M08945_orderfulfillment_order o ON o.orderid = b.orderid
+      WHERE b.status = 'Open' AND o.productid = @productid
+      ORDER BY b.createdat ASC, b.orderid ASC
+    `);
+
+  const row = found.recordset[0];
+  if (!row) return null;
+
+  const allocatedquantity = Math.min(availablequantity, row.backorderedquantity);
+  const newBackordered = row.backorderedquantity - allocatedquantity;
+  const newReleased = row.releasedquantity + allocatedquantity;
+  const newStatus = newBackordered === 0 ? 'Closed' : 'Open';
+
+  const transaction = new sql.Transaction(pool);
+  await transaction.begin();
+  try {
+    await new sql.Request(transaction)
+      .input('orderid', sql.VarChar(50), row.orderid)
+      .input('warehouseid', sql.VarChar(10), warehouseid)
+      .input('allocatedquantity', sql.Int, allocatedquantity)
+      .query(`
+        INSERT INTO M08945_orderfulfillment_allocation (orderid, warehouseid, allocatedquantity)
+        VALUES (@orderid, @warehouseid, @allocatedquantity)
+      `);
+
+    await new sql.Request(transaction)
+      .input('orderid', sql.VarChar(50), row.orderid)
+      .input('releasedquantity', sql.Int, newReleased)
+      .input('backorderedquantity', sql.Int, newBackordered)
+      .query(`
+        UPDATE M08945_orderfulfillment_order
+        SET releasedquantity = @releasedquantity, backorderedquantity = @backorderedquantity
+        WHERE orderid = @orderid
+      `);
+
+    await new sql.Request(transaction)
+      .input('orderid', sql.VarChar(50), row.orderid)
+      .input('quantity', sql.Int, newBackordered)
+      .input('status', sql.VarChar(20), newStatus)
+      .query(`
+        UPDATE M08945_orderfulfillment_backorder
+        SET quantity = @quantity, status = @status
+        WHERE orderid = @orderid
+      `);
+
+    await transaction.commit();
+  } catch (err) {
+    await transaction.rollback().catch(() => {});
+    throw err;
+  }
+
+  return {
+    orderid: row.orderid,
+    backorderstatus: newStatus,
+    releasedquantity: newReleased,
+    backorderedquantity: newBackordered,
+    allocation: { warehouseid, allocatedquantity }
+  };
+}
+const applyInventoryAvailability = withBreaker('orderRepository.applyInventoryAvailability', _applyInventoryAvailability);
+
+module.exports = { getById, tryCreateReleased, tryCreatePriorityOrder, createBlocked, applyInventoryAvailability };

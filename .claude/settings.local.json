@@ -39,7 +39,25 @@
       "Bash(MSYS_NO_PATHCONV=1 docker cp \"E:/ai native invetory/db/sql/002_M08945_orderfulfillment_change1.sql\" m08945-sqlserver:/tmp/change1.sql)",
       "Bash(MSYS_NO_PATHCONV=1 docker exec m08945-sqlserver /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P 'Ch@ngeMe123!' -C -d M08945_orderfulfillment -i /tmp/change1.sql)",
       "Bash(echo \"PRIORITY_PARTIAL_THRESHOLD_PERCENT=70\")",
-      "Bash(curl -s http://localhost:4001/health)"
+      "Bash(curl -s http://localhost:4001/health)",
+      "Bash(curl -s -X POST http://localhost:4001/internal/inventory -H 'Content-Type: application/json' -H 'X-Internal-Token: dev-shared-secret-12345' -d '{\"productid\":\"prodP1\",\"warehouseid\":\"WH-A\",\"availablequantity\":40,\"earliestdispatchdate\":\"2026-09-01\"}')",
+      "Bash(curl -s -X POST http://localhost:4001/internal/inventory -H 'Content-Type: application/json' -H 'X-Internal-Token: dev-shared-secret-12345' -d '{\"productid\":\"prodP1\",\"warehouseid\":\"WH-B\",\"availablequantity\":35,\"earliestdispatchdate\":\"2026-09-01\"}')",
+      "Bash(curl -s -X POST http://localhost:4001/internal/inventory -H 'Content-Type: application/json' -H 'X-Internal-Token: dev-shared-secret-12345' -d '{\"productid\":\"prodP1\",\"warehouseid\":\"WH-C\",\"availablequantity\":1,\"earliestdispatchdate\":\"2026-09-01\"}')",
+      "Bash(curl -s -X POST http://localhost:4001/internal/inventory -H 'Content-Type: application/json' -H 'X-Internal-Token: dev-shared-secret-12345' -d '{\"productid\":\"prodP2\",\"warehouseid\":\"WH-A\",\"availablequantity\":69,\"earliestdispatchdate\":\"2026-09-01\"}')",
+      "Bash(curl -s -X POST http://localhost:4001/internal/inventory -H 'Content-Type: application/json' -H 'X-Internal-Token: dev-shared-secret-12345' -d '{\"productid\":\"prodP3\",\"warehouseid\":\"WH-A\",\"availablequantity\":40,\"earliestdispatchdate\":\"2026-09-01\"}')",
+      "Bash(curl -s -X POST http://localhost:4001/internal/inventory -H 'Content-Type: application/json' -H 'X-Internal-Token: dev-shared-secret-12345' -d '{\"productid\":\"prodP3\",\"warehouseid\":\"WH-B\",\"availablequantity\":35,\"earliestdispatchdate\":\"2026-09-01\"}')",
+      "Bash(curl -s -X POST http://localhost:4001/internal/customers -H 'Content-Type: application/json' -H 'X-Internal-Token: dev-shared-secret-12345' -d '{\"customerid\":\"custP\",\"eligibilitystatus\":\"Eligible\"}')",
+      "Bash(curl -s -X POST http://localhost:4001/internal/orders -H 'Content-Type: application/json' -H 'X-Internal-Token: dev-shared-secret-12345' -d '{\"orderid\":\"ordP1001\",\"customerid\":\"custP\",\"customertype\":\"Priority\",\"productid\":\"prodP3\",\"quantity\":100,\"promiseddeliverydate\":\"2026-09-25\"}')",
+      "Bash(curl -s -X POST http://localhost:4001/internal/orders -H 'Content-Type: application/json' -H 'X-Internal-Token: dev-shared-secret-12345' -d '{\"orderid\":\"ordP1002\",\"customerid\":\"custP\",\"customertype\":\"Priority\",\"productid\":\"prodP2\",\"quantity\":100,\"promiseddeliverydate\":\"2026-09-25\"}')",
+      "Bash(curl -s -X POST http://localhost:4001/internal/orders -H 'Content-Type: application/json' -H 'X-Internal-Token: dev-shared-secret-12345' -d '{\"orderid\":\"ordS1001\",\"customerid\":\"custP\",\"customertype\":\"Standard\",\"productid\":\"prodP3\",\"quantity\":50,\"promiseddeliverydate\":\"2026-09-25\"}')",
+      "Bash(curl -s -X POST http://localhost:4001/internal/orders -H 'Content-Type: application/json' -H 'X-Internal-Token: __TRACKED_VAR__' -d '{\"orderid\":\"ordP1003\",\"customerid\":\"custP\",\"customertype\":\"Priority\",\"productid\":\"prodP2\",\"quantity\":100,\"promiseddeliverydate\":\"2026-09-25\"}')",
+      "Bash(curl -s -X POST http://localhost:4001/internal/inventory -H 'Content-Type: application/json' -H 'X-Internal-Token: __TRACKED_VAR__' -d '{\"productid\":\"prodP4\",\"warehouseid\":\"WH-A\",\"availablequantity\":80,\"earliestdispatchdate\":\"2026-09-01\"}')",
+      "Bash(curl -s -X POST http://localhost:4001/internal/inventory -H 'Content-Type: application/json' -H 'X-Internal-Token: __TRACKED_VAR__' -d '{\"productid\":\"prodP4\",\"warehouseid\":\"WH-B\",\"availablequantity\":50,\"earliestdispatchdate\":\"2026-09-01\"}')",
+      "Bash(curl -s -X POST http://localhost:4001/internal/orders -H 'Content-Type: application/json' -H 'X-Internal-Token: __TRACKED_VAR__' -d '{\"orderid\":\"ordP1004\",\"customerid\":\"custP\",\"customertype\":\"Priority\",\"productid\":\"prodP4\",\"quantity\":100,\"promiseddeliverydate\":\"2026-09-25\"}')",
+      "Bash(git status *)",
+      "Bash(git check-ignore *)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)"
     ],
     "additionalDirectories": [
       "E:\\ai native invetory\\.claude\\skills"

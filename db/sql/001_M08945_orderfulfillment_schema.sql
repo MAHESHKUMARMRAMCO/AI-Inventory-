@@ -123,8 +123,9 @@ CREATE TABLE M08945_orderfulfillment_allocation (
     allocatedquantity  INT          NOT NULL
         CONSTRAINT CK_M08945_orderfulfillment_allocation_qty CHECK (allocatedquantity > 0),
     createdat           DATETIME2(3) NOT NULL
-        CONSTRAINT DF_M08945_orderfulfillment_allocation_createdat DEFAULT SYSUTCDATETIME(),
-    CONSTRAINT UQ_M08945_orderfulfillment_allocation_order_wh UNIQUE (orderid, warehouseid)
+        CONSTRAINT DF_M08945_orderfulfillment_allocation_createdat DEFAULT SYSUTCDATETIME()
+    -- CHANGE2: no longer UNIQUE(orderid, warehouseid) — a backorder fulfilment
+    -- adds an additional allocation row that may target the same warehouse.
 );
 CREATE INDEX IX_M08945_orderfulfillment_allocation_orderid
     ON M08945_orderfulfillment_allocation (orderid);
@@ -141,9 +142,9 @@ CREATE TABLE M08945_orderfulfillment_backorder (
         CONSTRAINT FK_M08945_orderfulfillment_backorder_order
         REFERENCES M08945_orderfulfillment_order (orderid),
     quantity           INT          NOT NULL
-        CONSTRAINT CK_M08945_orderfulfillment_backorder_qty CHECK (quantity > 0),
+        CONSTRAINT CK_M08945_orderfulfillment_backorder_qty CHECK (quantity >= 0),
     status             VARCHAR(20)  NOT NULL
-        CONSTRAINT CK_M08945_orderfulfillment_backorder_status CHECK (status IN ('Open')),
+        CONSTRAINT CK_M08945_orderfulfillment_backorder_status CHECK (status IN ('Open','Closed')),
     createdat           DATETIME2(3) NOT NULL
         CONSTRAINT DF_M08945_orderfulfillment_backorder_createdat DEFAULT SYSUTCDATETIME(),
     CONSTRAINT UQ_M08945_orderfulfillment_backorder_orderid UNIQUE (orderid)

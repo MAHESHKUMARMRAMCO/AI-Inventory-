@@ -5,6 +5,7 @@ const errorHandler = require('./api/middleware/errorHandler');
 const ordersRouter = require('./api/routes/orders.routes');
 const customersRouter = require('./api/routes/customers.routes');
 const inventoryRouter = require('./api/routes/inventory.routes');
+const inventoryAvailabilityRouter = require('./api/routes/inventoryAvailability.routes');
 
 function createApp() {
   const app = express();
@@ -19,6 +20,7 @@ function createApp() {
   app.use('/internal/orders', internalAuth, ordersRouter);
   app.use('/internal/customers', internalAuth, customersRouter);
   app.use('/internal/inventory', internalAuth, inventoryRouter);
+  app.use('/internal/inventory-availability', internalAuth, inventoryAvailabilityRouter);
 
   app.use((req, res) => {
     res.status(404).json({ error: 'not_found' });
