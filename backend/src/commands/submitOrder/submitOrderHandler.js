@@ -83,7 +83,8 @@ async function submitPriorityOrder(orderInput) {
     });
 
     if (decision.status === 'Blocked') {
-      return blockOrder(orderInput, REASON.BELOW_THRESHOLD);
+      // Spec: below-threshold block has backorderedquantity = 0 (no backorder created).
+      return blockOrder(orderInput, REASON.BELOW_THRESHOLD, 0);
     }
 
     const result = await orderRepository.tryCreatePriorityOrder({
@@ -104,8 +105,8 @@ async function submitPriorityOrder(orderInput) {
   return blockOrder(orderInput, REASON.NO_WAREHOUSE_AVAILABLE);
 }
 
-async function blockOrder(orderInput, reason) {
-  const blocked = await orderRepository.createBlocked(orderInput, reason);
+async function blockOrder(orderInput, reason, backorderedquantity = orderInput.quantity) {
+  const blocked = await orderRepository.createBlocked(orderInput, reason, backorderedquantity);
   eventBus.emit(ORDER_BLOCKED, blocked);
   return blocked;
 }

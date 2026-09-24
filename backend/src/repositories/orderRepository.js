@@ -221,7 +221,8 @@ const tryCreatePriorityOrder = withBreaker('orderRepository.tryCreatePriorityOrd
 
 async function _createBlocked(
   { orderid, customerid, customertype, productid, quantity, promiseddeliverydate },
-  reason
+  reason,
+  backorderedquantity = quantity
 ) {
   const pool = await getPool();
   await pool
@@ -233,7 +234,7 @@ async function _createBlocked(
     .input('quantity', sql.Int, quantity)
     .input('promiseddeliverydate', sql.Date, new Date(promiseddeliverydate))
     .input('reason', sql.VarChar(50), reason)
-    .input('backorderedquantity', sql.Int, quantity)
+    .input('backorderedquantity', sql.Int, backorderedquantity)
     .query(`
       INSERT INTO M08945_orderfulfillment_order
         (orderid, customerid, customertype, productid, quantity, promiseddeliverydate,
@@ -248,7 +249,7 @@ async function _createBlocked(
     status: 'Blocked',
     reason,
     releasedquantity: 0,
-    backorderedquantity: quantity,
+    backorderedquantity,
     allocations: [],
     backorder: null
   };

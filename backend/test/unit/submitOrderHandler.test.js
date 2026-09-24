@@ -48,7 +48,7 @@ describe('submitOrder', () => {
     expect(result.status).toBe('Blocked');
     expect(result.reason).toBe('blocked-credithold');
     expect(inventoryRepository.getByProductId).not.toHaveBeenCalled();
-    expect(orderRepository.createBlocked).toHaveBeenCalledWith(baseOrder, 'blocked-credithold');
+    expect(orderRepository.createBlocked).toHaveBeenCalledWith(baseOrder, 'blocked-credithold', 60);
   });
 
   it('blocks with blocked-eligibilityunknown for an Unknown customer', async () => {

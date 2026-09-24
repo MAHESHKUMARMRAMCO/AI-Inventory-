@@ -26,6 +26,11 @@ export default function FulfillmentResult({ result }) {
           ? result.allocations.map((a) => `${a.warehouseid} x ${a.allocatedquantity}`).join(', ')
           : '[]'}
       </div>
+      {result.backorder && (
+        <div>
+          <span className="font-semibold">backorder:</span> {result.backorder.quantity} ({result.backorder.status})
+        </div>
+      )}
     </div>
   );
 }
